@@ -63,6 +63,47 @@ CircularDoublyLinkedList.prototype.insertBefore = (CDLL, node, afterNode) => {
   afterNode.prev = node;
 };
 
+CircularDoublyLinkedList.prototype.insertAfter = (CDLL, node, beforeNode) => {
+  if (beforeNode === CDLL.tail) {
+    CDLL.addToTail(CDLL, node);
+    return;
+  }
+  const tempNode = beforeNode.next;
+  tempNode.prev = node;
+  node.prev = beforeNode;
+  node.next = tempNode;
+  beforeNode.next = node;
+};
+
+CircularDoublyLinkedList.prototype.deleteNode = (CDLL, value) => {
+  const foundNode = CDLL.findNode(CDLL, value);
+  if (!foundNode) {
+    return false;
+  }
+  if (foundNode === CDLL.head) {
+    CDLL.head = foundNode.next;
+    CDLL.head.prev = CDLL.tail;
+    CDLL.tail.next = CDLL.head;
+    foundNode.next = null;
+    foundNode.prev = null;
+    return true;
+  }
+  if (foundNode === CDLL.tail) {
+    CDLL.tail = foundNode.prev;
+    CDLL.tail.next = foundNode.next;
+    foundNode.next = null;
+    foundNode.prev = null;
+    return true;
+  }
+  const beforeNode = foundNode.prev;
+  const afterNode = foundNode.next;
+  beforeNode.next = afterNode;
+  afterNode.prev = beforeNode;
+  foundNode.next = null;
+  foundNode.prev = null;
+  return true;
+};
+
 CircularDoublyLinkedList.prototype.listNodes = CDLL => {
   const arr = [];
   const startNode = CDLL.head;

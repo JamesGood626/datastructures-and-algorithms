@@ -3,6 +3,13 @@ const {
   Node
 } = require("../circular-doubly-linked-list");
 
+const createListOfFour = CDLL => {
+  CDLL.addToTail(CDLL, new Node(10));
+  CDLL.addToTail(CDLL, new Node(20));
+  CDLL.addToTail(CDLL, new Node(30));
+  CDLL.addToTail(CDLL, new Node(40));
+};
+
 describe("Tests singlylinkedlist", () => {
   let CDLL;
 
@@ -57,10 +64,7 @@ describe("Tests singlylinkedlist", () => {
   });
 
   test("finds node with desired value and returns it to facilitate the insertNode and deleteNode methods", () => {
-    CDLL.addToTail(CDLL, new Node(10));
-    CDLL.addToTail(CDLL, new Node(20));
-    CDLL.addToTail(CDLL, new Node(30));
-    CDLL.addToTail(CDLL, new Node(40));
+    createListOfFour(CDLL);
     const headNode = CDLL.findNode(CDLL, 10);
     const tailNode = CDLL.findNode(CDLL, 40);
     expect(headNode).toEqual(CDLL.head);
@@ -68,10 +72,7 @@ describe("Tests singlylinkedlist", () => {
   });
 
   test("returns false if node isn't found", () => {
-    CDLL.addToTail(CDLL, new Node(10));
-    CDLL.addToTail(CDLL, new Node(20));
-    CDLL.addToTail(CDLL, new Node(30));
-    CDLL.addToTail(CDLL, new Node(40));
+    createListOfFour(CDLL);
     const notFoundNode = CDLL.findNode(CDLL, 50);
     expect(notFoundNode).toBe(false);
   });
@@ -92,10 +93,7 @@ describe("Tests singlylinkedlist", () => {
   });
 
   test("inserts node before desired node value passed to findNode", () => {
-    CDLL.addToTail(CDLL, new Node(10));
-    CDLL.addToTail(CDLL, new Node(20));
-    CDLL.addToTail(CDLL, new Node(30));
-    CDLL.addToTail(CDLL, new Node(40));
+    createListOfFour(CDLL);
     const foundNode = CDLL.findNode(CDLL, 30);
     CDLL.insertBefore(CDLL, new Node(70), foundNode);
     const foundHeadNode = CDLL.findNode(CDLL, 10);
@@ -104,9 +102,45 @@ describe("Tests singlylinkedlist", () => {
     expect(nodeArr).toEqual([26, 10, 20, 70, 30, 40]);
   });
 
-  // test("deletes desired node", () => {});
+  test("inserts node after desired node value passed to findNode", () => {
+    createListOfFour(CDLL);
+    const foundNode = CDLL.findNode(CDLL, 10);
+    CDLL.insertAfter(CDLL, new Node(70), foundNode);
+    const foundTailNode = CDLL.findNode(CDLL, 40);
+    CDLL.insertAfter(CDLL, new Node(26), foundTailNode);
+    const nodeArr = CDLL.listNodes(CDLL);
+    expect(nodeArr).toEqual([10, 70, 20, 30, 40, 26]);
+  });
 
-  // test("deletes desired node and handles Head pointer", () => {});
+  test("deletes desired node", () => {
+    createListOfFour(CDLL);
+    const deleteResult = CDLL.deleteNode(CDLL, 20);
+    const nodeArr = CDLL.listNodes(CDLL);
+    expect(deleteResult).toBe(true);
+    expect(nodeArr).toEqual([10, 30, 40]);
+  });
 
-  // test("deletes desired node and handles Tail pointer", () => {});
+  test("returns false if node to be deleted isn't in the list.", () => {
+    createListOfFour(CDLL);
+    const deleteResult = CDLL.deleteNode(CDLL, 50);
+    expect(deleteResult).toBe(false);
+  });
+
+  test("deletes desired node and handles Head pointer", () => {
+    createListOfFour(CDLL);
+    const deleteResult = CDLL.deleteNode(CDLL, 10);
+    const nodeArr = CDLL.listNodes(CDLL);
+    expect(deleteResult).toBe(true);
+    expect(CDLL.head.prev).toEqual(CDLL.tail);
+    expect(nodeArr).toEqual([20, 30, 40]);
+  });
+
+  test("deletes desired node and handles Tail pointer", () => {
+    createListOfFour(CDLL);
+    const deleteResult = CDLL.deleteNode(CDLL, 40);
+    const nodeArr = CDLL.listNodes(CDLL);
+    expect(deleteResult).toBe(true);
+    expect(CDLL.tail.next).toEqual(CDLL.head);
+    expect(nodeArr).toEqual([10, 20, 30]);
+  });
 });
