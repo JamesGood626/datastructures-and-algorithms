@@ -28,6 +28,20 @@ class BinarySearchTree {
     }
   }
 
+  traverse(node, order, cb) {
+    if (order === "pre_order") {
+      cb(node);
+    }
+    if (node.left !== null) this.traverse(node.left, order, cb);
+    if (order === "in_order") {
+      cb(node);
+    }
+    if (node.right !== null) this.traverse(node.right, order, cb);
+    if (order === "post_order") {
+      cb(node);
+    }
+  }
+
   traverseUntilLeafNull(node, traversingNode) {
     let nodeWithNullLeaf = null;
     while (!nodeWithNullLeaf) {
@@ -45,6 +59,26 @@ class BinarySearchTree {
       }
     }
     return nodeWithNullLeaf;
+  }
+
+  traverseUntilFoundNode(value, traversingNode) {
+    let foundNode = null;
+    let notInTree = null;
+    let parentNode = null;
+    while (!foundNode || !notInTree) {
+      foundNode = value === traversingNode.value ? traversingNode : null;
+      parentNode = traversingNode;
+      if (value < traversingNode.value) {
+        traversingNode.left !== null
+          ? (traversingNode = traversingNode.left)
+          : (notInTree = true);
+      } else if (value > traversingNode.value) {
+        traversingNode.right !== null
+          ? (traversingNode = traversingNode.right)
+          : (notInTree = true);
+      }
+    }
+    return { parentNode, foundNode };
   }
 }
 
